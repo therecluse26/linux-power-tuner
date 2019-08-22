@@ -830,6 +830,7 @@ pcsx2:i386
 phonon4qt5
 phonon4qt5-backend-gstreamer
 phonon-backend-gstreamer-common
+phoronix-test-suite
 pidgin
 pim-data-exporter
 pim-sieve-editor

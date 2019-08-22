@@ -6,6 +6,7 @@ import (
 	"golang.org/x/sys/unix"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -15,14 +16,7 @@ type FileMeta struct {
 	Opened 		bool
 }
 
-type Search struct {
-	Type SearchType
-	Query interface{}
-}
-
 type FileAccess int
-
-type SearchType int
 
 const (
 	Writeable FileAccess = iota
@@ -31,11 +25,6 @@ const (
 	NotFound
 )
 
-const (
-	Simple SearchType = iota
-	Regex
-	Csv
-)
 
 /*
  * Checks access level of a file path
@@ -77,21 +66,29 @@ func (f *FileMeta) SearchFileValue(search Search) bool {
 	if f.AccessLevel == Readable || f.AccessLevel == Writeable {
 
 		if search.Type == Simple {
-
 			buf, err := ioutil.ReadFile(f.Path)
 			if err != nil {
 				utils.HandleError(err, 0, true, true)
 				return false
 			}
-
 			if fmt.Sprintf("%v", search.Query) == strings.TrimSpace(string(buf)) {
 				return true
 			}
 
 		} else if search.Type == Regex {
-
-
-
+			buf, err := ioutil.ReadFile(f.Path)
+			if err != nil {
+				utils.HandleError(err, 0, true, true)
+				return false
+			}
+			match, err := regexp.Match(search.Query.(string), buf)
+			if err != nil {
+				utils.HandleError(err, 0, true, true)
+				return false
+			}
+			if match {
+				return true
+			}
 		}
 
 	}

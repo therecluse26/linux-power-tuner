@@ -17,8 +17,17 @@ func TestSearchFileValue (t *testing.T) {
 	})
 
 	t.Run("regex_search_simple", func(t *testing.T){
-		regexQuery := ""
-		file := conditions.FileMeta{Path: "test_data/search_simple.txt"}
+		regexQuery := `TRUE.*`
+		file := conditions.FileMeta{Path: "test_data/search_regex_simple.txt"}
+		match := file.SearchFileValue(conditions.Search{Type: conditions.Regex, Query: regexQuery})
+		if match != true {
+			t.Errorf("got %ts want %t", match, true)
+		}
+	})
+
+	t.Run("regex_search_keyval", func(t *testing.T){
+		regexQuery := `status=true`
+		file := conditions.FileMeta{Path: "test_data/regex_search_keyval.txt"}
 		match := file.SearchFileValue(conditions.Search{Type: conditions.Regex, Query: regexQuery})
 		if match != true {
 			t.Errorf("got %ts want %t", match, true)
