@@ -112,3 +112,32 @@ func LoadPreset(filePath string) Preset {
 	err = json.Unmarshal(presetFile, &presetStruct)
 	return presetStruct
 }
+
+func (c *Config) GetAvailablePresets() []string {
+	var presetFiles []string
+	_ = filepath.Walk(c.AvailablePresetPath, func(path string, info os.FileInfo, err error) error {
+		if filepath.Ext(path) == ".json" {
+			presetFiles = append(presetFiles, info.Name())
+		}
+		return nil
+	})
+	return presetFiles
+}
+
+func (c *Config) EnablePreset(fileName string) error {
+	err := os.Link(c.AvailablePresetPath + fileName, c.EnabledPresetPath + fileName)
+	if err != nil {
+		if !os.IsExist(err) {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c *Config) DisablePreset(fileName string) error {
+	err := os.Remove(c.EnabledPresetPath + fileName)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -1,27 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"github.com/therecluse26/linux-power-tuner/pkg/conf"
+	"log"
 )
 
 func main() {
 
 	config := conf.LoadGlobalConfig()
-	presets := config.LoadActivePresets()
-	for _, p := range presets {
-		fmt.Println("Preset: " + p.Name + " - " + p.Description)
-		for _, e := range p.Events {
-			fmt.Println("Event: " + e.Name + " - " + e.Description)
-			fmt.Println(e.PollingTime)
-			for _, r := range e.Reactions {
-				fmt.Println("Reaction: " + r.Name)
-				fmt.Println("Function: " + r.Function.Name)
-				for _, a := range r.Function.Args {
-					fmt.Println(a.Key + " - " + a.Value)
-				}
-			}
-		}
+
+	availPresets := config.GetAvailablePresets()
+
+	err := config.EnablePreset(availPresets[1])
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = config.DisablePreset(availPresets[1])
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	// Register events
