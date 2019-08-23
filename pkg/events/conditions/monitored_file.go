@@ -59,6 +59,8 @@ func (f *FileMeta) CheckAccess() {
 
 }
 
+
+/**** REWRITE THIS TO SEEK OVER FILES WITH BUFIO INSTEAD OF IOUTIL ****/
 func (f *FileMeta) SearchFileValue(search Search) bool {
 
 	f.CheckAccess()

@@ -1,9 +1,8 @@
 package system
 
 import (
-	"log"
-
 	pscpu "github.com/shirou/gopsutil/cpu"
+	"log"
 )
 
 type HostInfo struct {
@@ -54,4 +53,18 @@ func GetInfo() HostInfo {
 	cpuInfo.GetCPUInfo()
 	sysInfo := HostInfo{Cpu: cpuInfo}
 	return sysInfo
+}
+
+func GetSystemDirectories() ([]map[string]string, error) {
+	return []map[string]string{}, nil
+}
+
+func GetProcessId() (int, error) {
+	return 0, nil
+}
+
+
+
+func EscalatePrivileges() (bool, error) {
+	return false, nil
 }

@@ -32,7 +32,7 @@ func (b *BatteryInfo) GetBatteryPercent() float64 {
 /*
  * Returns boolean charging status result
  */
-func (b *BatteryInfo) IsCharging() bool {
+func (b *BatteryInfo) isCharging() bool {
 	for _, bat := range *b {
 		if bat.State == battery.Charging {
 			return true
@@ -62,11 +62,16 @@ func (b *BatteryInfo) GetChargingRate(raw ...bool) interface{} {
 		}
 	}
 	// Format as string
-	if b.IsCharging() == true {
+	if b.isCharging() == true {
 		rateFmt = "Charging ~"
-	} else {
+	} else if b.isCharging() == false {
 		rateFmt = "Discharging ~"
 	}
 	rateFmt += strconv.Itoa((rate / batCount) / 1000) + "W"
+
+	if rate == 0 {
+		rateFmt = "Idle"
+	}
+
 	return rateFmt
 }
