@@ -27,7 +27,7 @@ type Config struct {
 	AppConfig interface{} `json:"appConfig"`
 }
 
-func LoadGlobalConfig() *Config {
+func LoadConfig() *Config {
 	userInfo, err := user.Current()
 	if err != nil {
 		utils.HandleError(err, 0, true, true)
@@ -40,8 +40,15 @@ func LoadGlobalConfig() *Config {
 	c.AvailablePresetPath = c.ConfigPath + "available-presets/"
 	c.EnabledPresetPath = c.ConfigPath + "enabled-presets/"
 	c.CustomScriptsPath = c.ConfigPath + "custom-scripts/"
-
 	return c
+}
+
+type Function struct {
+	Name string `json:"name"`
+	Args []struct {
+		Key   string `json:"key"`
+		Value interface{} `json:"value"`
+	} `json:"args"`
 }
 
 type Preset struct {
@@ -51,40 +58,19 @@ type Preset struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
 		PollingTime int64  `json:"pollingTime"`
-		Reactions   []struct {
-			Name     string `json:"name"`
-			Function struct {
-				Name string `json:"name"`
-				Args []struct {
-					Key   string `json:"key"`
-					Value string `json:"value"`
-				} `json:"args"`
-			} `json:"function"`
-		} `json:"reactions"`
+		Conditions []struct {
+			Id 			int    		`json:"id"`
+			Description string 		`json:"description"`
+			Function 	Function	`json:"function"`
+			ExpectedVal interface{} `json:"expected_val"`
+		} `json:"conditions"`
+		ConditionExp string `json:"condition_exp"`
 	} `json:"events"`
+	Reactions   []struct {
+		Name     string		`json:"name"`
+		Function Function	`json:"function"`
+	} `json:"reactions"`
 }
-
-/**** Sample JSON Config file
-{
-	"name": "configName",
-	"description": "configDesc",
-	"events": [{
-		"name": "eventName",
-		"description": "eventDesc",
-		"pollingTime": 2000000000000000,
-		"reactions": [{
-			"name":"reaction1",
-			"function": {
-				"name": "function1",
-				"args": [
-					{"key": "keyval1", "value": "valval1"},
-					{"key": "keyval2", "value": "valval2"}
-				]
-			}
-		}]
-	}]
-}
- */
 
 /*
  * Loads active preset files from EnabledPresetPath directory
@@ -113,6 +99,9 @@ func LoadPreset(filePath string) Preset {
 	return presetStruct
 }
 
+/*
+ * Gets available preset file names from AvailablePresetPath
+ */
 func (c *Config) GetAvailablePresets() []string {
 	var presetFiles []string
 	_ = filepath.Walk(c.AvailablePresetPath, func(path string, info os.FileInfo, err error) error {
@@ -124,6 +113,9 @@ func (c *Config) GetAvailablePresets() []string {
 	return presetFiles
 }
 
+/*
+ * Enables preset by creating a link from the AvailablePresetPath to the EnabledPresetPath
+ */
 func (c *Config) EnablePreset(fileName string) error {
 	err := os.Link(c.AvailablePresetPath + fileName, c.EnabledPresetPath + fileName)
 	if err != nil {
@@ -134,6 +126,9 @@ func (c *Config) EnablePreset(fileName string) error {
 	return nil
 }
 
+/*
+ * Disables preset by removing link file from EnabledPresetPath
+ */
 func (c *Config) DisablePreset(fileName string) error {
 	err := os.Remove(c.EnabledPresetPath + fileName)
 	if err != nil {

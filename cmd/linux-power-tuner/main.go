@@ -7,14 +7,16 @@ import (
 
 func main() {
 
-	config := conf.LoadGlobalConfig()
-
+	config := conf.LoadConfig()
 	availPresets := config.GetAvailablePresets()
-
-	err := config.EnablePreset(availPresets[1])
-	if err != nil {
-		log.Fatal(err)
+	var err error
+	for _, p := range availPresets {
+		err = config.EnablePreset(p)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
+
 	err = config.DisablePreset(availPresets[1])
 	if err != nil {
 		log.Fatal(err)

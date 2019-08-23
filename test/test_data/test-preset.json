@@ -1,0 +1,57 @@
+{
+  "name": "presetName",
+  "description": "Preset description",
+  "events": [{
+    "name": "eventName",
+    "description": "Event description",
+    "pollingTime": 200000,
+    "conditions":  [
+      {
+        "id": 1,
+        "description": "Test condition",
+        "function": {
+          "name": "funcOne",
+          "args": [
+            {"key": "keyval1", "value": 2331},
+            {"key": "keyval2", "value": "testVal"}
+          ]
+        },
+        "expected_val": true
+      },
+      {
+        "id": 2,
+        "description": "Condition2",
+        "function": {
+          "name": "funcTwo",
+          "args": [
+            {"key": "keyval1", "value": "testing 123"}
+          ]
+        },
+        "expected_val": 12345
+      },
+      {
+        "id": 3,
+        "description": "Condition3",
+        "function": {
+          "name": "funcThree",
+          "args": [
+            {"key": "keyval1", "value": "testing"}
+          ]
+        },
+        "expected_val": "Testing test"
+      }
+    ],
+    "condition_exp": "1 AND (2 OR 3)",
+    "reactions": [{
+      "name":"reaction1",
+      "function": {
+        "name": "funcFour",
+        "args": [
+          {"key": "keyval1", "value": "valval1"},
+          {"key": "keyval2", "value": 123},
+          {"key": "keyval3", "value": "testval3"}
+        ]
+      }
+    }]
+  }]
+}
