@@ -14,7 +14,7 @@ func TestLoadGlobalConfig (t *testing.T) {
 			t.Errorf("Error pulling current user")
 		}
 		homeFolder := userInfo.HomeDir + "/"
-		config := conf.LoadGlobalConfig()
+		config := conf.LoadConfig()
 		if config.HomePath != homeFolder {
 			t.Errorf("got %s want %s", config.HomePath, homeFolder)
 		}
