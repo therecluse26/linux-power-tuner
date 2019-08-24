@@ -2,7 +2,7 @@ package system
 
 import (
 	"github.com/distatus/battery"
-	"github.com/therecluse26/linux-power-tuner/pkg/utils"
+	"github.com/therecluse26/uranium/pkg/utils"
 	"strconv"
 )
 

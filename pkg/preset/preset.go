@@ -1,11 +1,12 @@
-package conf
+package preset
 
 import (
 	"encoding/json"
-	"github.com/therecluse26/linux-power-tuner/pkg/utils"
+	"github.com/spf13/viper"
+	"github.com/therecluse26/uranium/pkg/function"
+	"github.com/therecluse26/uranium/pkg/utils"
 	"io/ioutil"
 	"os"
-	"os/user"
 	"path/filepath"
 )
 
@@ -13,43 +14,9 @@ import (
  * Presets should be defined by pointing to events within "events" directory
  * within a .json preset file
  *
- * User-defined presets should be enabled/disabled by symlinking files
- * from "presets" into "enabled"
+ * User-defined preset should be enabled/disabled by symlinking files
+ * from "preset" into "enabled"
  */
-type Config struct {
-	HomePath string
-	ConfigPath string
-	GlobalConfigFile string
-	ConfigEventsPath string
-	AvailablePresetPath string
-	EnabledPresetPath string
-	CustomScriptsPath string
-	AppConfig interface{} `json:"appConfig"`
-}
-
-func LoadConfig() *Config {
-	userInfo, err := user.Current()
-	if err != nil {
-		utils.HandleError(err, 0, true, true)
-	}
-	c := new(Config)
-	c.HomePath = userInfo.HomeDir + "/"
-	c.ConfigPath = c.HomePath + ".config/power-tuner/"
-	c.GlobalConfigFile = c.ConfigPath + "global-config.json"
-	c.ConfigEventsPath = c.ConfigPath + "events/"
-	c.AvailablePresetPath = c.ConfigPath + "available-presets/"
-	c.EnabledPresetPath = c.ConfigPath + "enabled-presets/"
-	c.CustomScriptsPath = c.ConfigPath + "custom-scripts/"
-	return c
-}
-
-type Function struct {
-	Name string `json:"name"`
-	Args []struct {
-		Key   string `json:"key"`
-		Value interface{} `json:"value"`
-	} `json:"args"`
-}
 
 type Preset struct {
 	Name        string `json:"name"`
@@ -61,23 +28,23 @@ type Preset struct {
 		Conditions []struct {
 			Id 			int    		`json:"id"`
 			Description string 		`json:"description"`
-			Function 	Function	`json:"function"`
+			Function 	function.Function	`json:"function"`
 			ExpectedVal interface{} `json:"expected_val"`
 		} `json:"conditions"`
 		ConditionExp string `json:"condition_exp"`
 	} `json:"events"`
 	Reactions   []struct {
 		Name     string		`json:"name"`
-		Function Function	`json:"function"`
+		Function function.Function	`json:"function"`
 	} `json:"reactions"`
 }
 
 /*
  * Loads active preset files from EnabledPresetPath directory
  */
-func (c *Config) LoadActivePresets() []Preset {
+func LoadActivePresets() []Preset {
 	var presets []Preset
-	_ = filepath.Walk(c.EnabledPresetPath, func(path string, info os.FileInfo, err error) error {
+	_ = filepath.Walk(viper.Get("EnabledPresetPath").(string), func(path string, info os.FileInfo, err error) error {
 		if filepath.Ext(path) == ".json" {
 			presets = append(presets, LoadPreset(path))
 		}
@@ -102,9 +69,9 @@ func LoadPreset(filePath string) Preset {
 /*
  * Gets available preset file names from AvailablePresetPath
  */
-func (c *Config) GetAvailablePresets() []string {
+func GetAvailablePresets() []string {
 	var presetFiles []string
-	_ = filepath.Walk(c.AvailablePresetPath, func(path string, info os.FileInfo, err error) error {
+	_ = filepath.Walk(viper.Get("AvailablePresetPath").(string), func(path string, info os.FileInfo, err error) error {
 		if filepath.Ext(path) == ".json" {
 			presetFiles = append(presetFiles, info.Name())
 		}
@@ -116,8 +83,8 @@ func (c *Config) GetAvailablePresets() []string {
 /*
  * Enables preset by creating a link from the AvailablePresetPath to the EnabledPresetPath
  */
-func (c *Config) EnablePreset(fileName string) error {
-	err := os.Link(c.AvailablePresetPath + fileName, c.EnabledPresetPath + fileName)
+func EnablePreset(fileName string) error {
+	err := os.Link(viper.Get("AvailablePresetPath").(string) + fileName, viper.Get("EnabledPresetPath").(string) + fileName)
 	if err != nil {
 		if !os.IsExist(err) {
 			return err
@@ -129,8 +96,8 @@ func (c *Config) EnablePreset(fileName string) error {
 /*
  * Disables preset by removing link file from EnabledPresetPath
  */
-func (c *Config) DisablePreset(fileName string) error {
-	err := os.Remove(c.EnabledPresetPath + fileName)
+func DisablePreset(fileName string) error {
+	err := os.Remove(viper.Get("EnabledPresetPath").(string) + fileName)
 	if err != nil {
 		return err
 	}
