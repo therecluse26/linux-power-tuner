@@ -2,14 +2,19 @@ package main
 
 import (
 	"github.com/spf13/viper"
-	"github.com/therecluse26/uranium/pkg/preset"
+	"github.com/therecluse26/uranium/pkg/function"
 	"github.com/therecluse26/uranium/pkg/utils"
-	"log"
 	"os/user"
 )
 
 func main() {
 	LoadConfig()
+
+	gf := function.GenericFunction{}
+
+	gf.FuncName("blahblahblah")
+
+	/*
 	availPresets := preset.GetAvailablePresets()
 	var err error
 	for _, p := range availPresets {
@@ -21,7 +26,7 @@ func main() {
 	err = preset.DisablePreset(availPresets[1])
 	if err != nil {
 		log.Fatal(err)
-	}
+	}*/
 	// Register events
 }
 
