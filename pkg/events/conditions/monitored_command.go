@@ -2,7 +2,7 @@ package conditions
 
 import (
 	"fmt"
-	"github.com/therecluse26/linux-power-tuner/pkg/utils"
+	"github.com/therecluse26/uranium/pkg/utils"
 	"os/exec"
 	"regexp"
 	"strings"

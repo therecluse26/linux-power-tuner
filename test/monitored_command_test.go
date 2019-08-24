@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/therecluse26/linux-power-tuner/pkg/events/conditions"
+	"github.com/therecluse26/uranium/pkg/events/conditions"
 	"testing"
 )
 
