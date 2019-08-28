@@ -15,14 +15,10 @@ func main() {
 
 	function.LoadFunctions()
 
-	ret, err := function.CallFunction(function.UserFuncs, "Multiply",  1, 3, 4)
-	if err != nil {
-		panic(err)
-	}
-
+	ret, _ := function.CallFunction(function.BuiltInFuncs, "AddInts",  []int{1, 3, 4})
 	fmt.Println(ret)
 
-	uc, err := function.CallFunction(function.UserFuncs, "UpperCase", "BlaHHblah")
+	uc, _ := function.CallFunction(function.BuiltInFuncs, "Hello")
 	fmt.Println(uc)
 
 
