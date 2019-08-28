@@ -3,7 +3,6 @@ package preset
 import (
 	"encoding/json"
 	"github.com/spf13/viper"
-	"github.com/therecluse26/uranium/pkg/function"
 	"github.com/therecluse26/uranium/pkg/utils"
 	"io/ioutil"
 	"os"
@@ -28,14 +27,14 @@ type Preset struct {
 		Conditions []struct {
 			Id 			int    		`json:"id"`
 			Description string 		`json:"description"`
-			Function 	function.Function	`json:"function"`
+			Function 	string		`json:"function"`
 			ExpectedVal interface{} `json:"expected_val"`
 		} `json:"conditions"`
 		ConditionExp string `json:"condition_exp"`
 	} `json:"events"`
 	Reactions   []struct {
 		Name     string		`json:"name"`
-		Function function.Function	`json:"function"`
+		Function string	`json:"function"`
 	} `json:"reactions"`
 }
 
