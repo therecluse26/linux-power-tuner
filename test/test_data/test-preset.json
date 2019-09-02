@@ -10,35 +10,32 @@
         "id": 1,
         "description": "Test condition",
         "function": {
-          "name": "funcOne",
-          "args": [
-            {"key": "keyval1", "value": 2331},
-            {"key": "keyval2", "value": "testVal"}
-          ]
+          "name": "Hello"
         },
-        "expected_val": true
+        "expected_val": "Hello, World!"
       },
       {
         "id": 2,
         "description": "Condition2",
         "function": {
-          "name": "funcTwo",
+          "name": "AddInts",
           "args": [
-            {"key": "keyval1", "value": "testing 123"}
+            {"order": 1, "value": [1, 2, 5]}
           ]
         },
-        "expected_val": 12345
+        "expected_val": 8
       },
       {
         "id": 3,
         "description": "Condition3",
         "function": {
-          "name": "funcThree",
+          "type": "custom",
+          "name": "UpperCase",
           "args": [
-            {"key": "keyval1", "value": "testing"}
+            {"order": 1, "value": "testing"}
           ]
         },
-        "expected_val": "Testing test"
+        "expected_val": "TESTING"
       }
     ],
     "condition_exp": "1 AND (2 OR 3)",
@@ -47,9 +44,9 @@
       "function": {
         "name": "funcFour",
         "args": [
-          {"key": "keyval1", "value": "valval1"},
-          {"key": "keyval2", "value": 123},
-          {"key": "keyval3", "value": "testval3"}
+          {"order": 1, "value": "valval1"},
+          {"order": 2, "value": 123},
+          {"order": 3, "value": "testval3"}
         ]
       }
     }]

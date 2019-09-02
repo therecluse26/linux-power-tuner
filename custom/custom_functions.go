@@ -1,11 +1,25 @@
 package custom
 
-import "github.com/gobuffalo/flect"
+import (
+	"strings"
+)
 
 func UpperCase(i string) string {
-	return flect.Capitalize(i)
+	return strings.ToUpper(i)
 }
 
-func Multiply(a, b, c int) int {
-	return a * b * c
+func Multiply(nums []int) int {
+	var t = nums[0]
+	for i := 0; i < len(nums); i++ {
+		t *= nums[i]
+	}
+	return t
+}
+
+func Map(slice []interface{}, function func(interface{})interface{}) interface{} {
+	var newSlice []interface{}
+	for _, n := range slice {
+		newSlice = append(newSlice, function(n))
+	}
+	return newSlice
 }

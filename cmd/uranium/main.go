@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"github.com/therecluse26/uranium/pkg/function"
+	"github.com/therecluse26/uranium/pkg/preset"
 	"log"
 	"os/user"
 	"path/filepath"
@@ -13,27 +14,31 @@ import (
 func main() {
 	LoadConfig()
 
+	presets := preset.LoadActivePresets()
+
+	fmt.Println(presets[0])
+
+	funcName := presets[0].Events[0].Conditions[0].Function.Name
+
 	function.LoadFunctions()
+
+	uc, _ := function.CallFunction(function.BuiltInFuncs, funcName)
+	fmt.Println(uc)
+
+
+	/*
+	uc, _ := function.CallFunction(function.BuiltInFuncs, "Hello")
+	fmt.Println(uc)
+
+	t, _ := function.CallFunction(function.UserFuncs, "UpperCase",  "test. yeah yeah no. yeah")
+	fmt.Println(t)
 
 	ret, _ := function.CallFunction(function.BuiltInFuncs, "AddInts",  []int{1, 3, 4})
 	fmt.Println(ret)
 
-	uc, _ := function.CallFunction(function.BuiltInFuncs, "Hello")
-	fmt.Println(uc)
-
-
-	/*_, e := function.CallFunction(function.EventFuncs,"UpperCase", "testing, 123")
-	if e != nil {
-		panic(e)
-	}
-	//fmt.Println(v)
-
-	_, e = function.CallFunction(function.ReactionFuncs,"Multiply", 2, 5, 6)
-	if e != nil {
-		panic(e)
-	}*/
-
-	//fmt.Println(r)
+	m, _ := function.CallFunction(function.UserFuncs, "Multiply",  []int{1, 3, 4})
+	fmt.Println(m)
+	*/
 
 	/*
 	availPresets := preset.GetAvailablePresets()

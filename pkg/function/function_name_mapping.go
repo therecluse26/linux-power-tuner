@@ -17,20 +17,17 @@ func LoadFunctions() {
 	UserFuncs = custom.ExportedFuncs
 }
 
-
-
-func CallFunction(m map[string]interface{}, name string, params ... interface{}) (result []reflect.Value, err error) {
+func CallFunction(m map[string]interface{}, name string, params ... interface{}) (result interface{}, err error) {
 	var f = reflect.ValueOf(m[name])
-
 	if len(params) != f.Type().NumIn() {
-		err = errors.New("Wrong number of arguments supplied to " + name)
+		err = errors.New("wrong number of arguments to " + name)
 		return
 	}
 	p := make([]reflect.Value, len(params))
 	for k, param := range params {
 		p[k] = reflect.ValueOf(param)
 	}
-	result = f.Call(p)
+	result = f.Call(p)[0]
 	return result, err
 }
 

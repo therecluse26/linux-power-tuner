@@ -16,7 +16,6 @@ import (
  * User-defined preset should be enabled/disabled by symlinking files
  * from "preset" into "enabled"
  */
-
 type Preset struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -27,15 +26,23 @@ type Preset struct {
 		Conditions []struct {
 			Id 			int    		`json:"id"`
 			Description string 		`json:"description"`
-			Function 	string		`json:"function"`
+			Function 	Function		`json:"function"`
 			ExpectedVal interface{} `json:"expected_val"`
 		} `json:"conditions"`
 		ConditionExp string `json:"condition_exp"`
 	} `json:"events"`
 	Reactions   []struct {
 		Name     string		`json:"name"`
-		Function string	`json:"function"`
+		Function Function	`json:"function"`
 	} `json:"reactions"`
+}
+
+type Function struct {
+	Name string `json:"name"`
+	Args []struct {
+		Order int `json:"order"`
+		Value interface{} `json:"value"`
+	} `json:"args"`
 }
 
 /*
