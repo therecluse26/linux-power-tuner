@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
 	"github.com/therecluse26/uranium/pkg/function"
 	"github.com/therecluse26/uranium/pkg/preset"
@@ -11,29 +10,13 @@ import (
 	"runtime"
 )
 
-func RunPresets(presets []preset.Preset, loadedFuncs []function.Funcs){
-	for _, pre := range presets {
-		for _, ev := range pre.Events {
-			for _, fn := range ev.Conditions {
-				res, err := function.CallFunction(function.AllFuncs, fn.Function)
-				if err != nil {
-					fmt.Println(err)
-				}
-				fmt.Println(res)
-			}
-		}
-	}
-}
-
 func main() {
+
 	LoadConfig()
-
 	presets := preset.LoadActivePresets()
-	function.LoadFunctions()
+	allFunctions := function.LoadFunctions()
 
-	RunPresets(presets, )
-
-
+	preset.RunPresets(presets, allFunctions)
 
 	/*
 	uc, _ := function.CallFunction(function.BuiltInFuncs, "Hello")

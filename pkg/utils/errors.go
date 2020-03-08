@@ -21,7 +21,6 @@ func HandleError (e error, severity int, log bool, display bool) {
 
 // Displays error in GUI
 func DisplayError(e error, severity int) {
-
 	// Display error code here
 
 }

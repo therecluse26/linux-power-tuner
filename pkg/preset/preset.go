@@ -2,54 +2,35 @@ package preset
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/spf13/viper"
+	"github.com/therecluse26/uranium/pkg/function"
+	"github.com/therecluse26/uranium/pkg/types"
 	"github.com/therecluse26/uranium/pkg/utils"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 )
 
-/*
- * Presets should be defined by pointing to events within "events" directory
- * within a .json preset file
- *
- * User-defined preset should be enabled/disabled by symlinking files
- * from "preset" into "enabled"
- */
-type Preset struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Events      []struct {
-		Name            string `json:"name"`
-		Description     string `json:"description"`
-		PollingInterval int64  `json:"pollingInterval"`
-		Conditions      []struct {
-			Id 			int    		`json:"id"`
-			Description string 		`json:"description"`
-			Function 	Function		`json:"function"`
-			ExpectedVal interface{} `json:"expected_val"`
-		} `json:"conditions"`
-		ConditionExp string `json:"condition_exp"`
-	} `json:"events"`
-	Reactions   []struct {
-		Name     string		`json:"name"` 
-		Function Function	`json:"function"`
-	} `json:"reactions"`
-}
 
-type Function struct {
-	Name string `json:"name"`
-	Args []struct {
-		Order int `json:"order"`
-		Value interface{} `json:"value"`
-	} `json:"args"`
+func RunPresets(presets []types.Preset, loadedFunctions types.Funcs){
+	for _, pre := range presets {
+		for _, ev := range pre.Events {
+			for _, fn := range ev.Conditions {
+				res, err := function.CallFunction(loadedFunctions, fn.Function)
+				if err != nil {
+					utils.HandleError(err, 1, true, true)
+				}
+				fmt.Println(res)
+			}
+		}
+	}
 }
-
 /*
  * Loads active preset files from EnabledPresetPath directory
  */
-func LoadActivePresets() []Preset {
-	var presets []Preset
+func LoadActivePresets() []types.Preset {
+	var presets []types.Preset
 	_ = filepath.Walk(viper.Get("EnabledPresetPath").(string), func(path string, info os.FileInfo, err error) error {
 		if filepath.Ext(path) == ".json" {
 			presets = append(presets, LoadPreset(path))
@@ -62,12 +43,12 @@ func LoadActivePresets() []Preset {
 /*
  * Returns Preset struct from json file
  */
-func LoadPreset(filePath string) Preset {
+func LoadPreset(filePath string) types.Preset {
 	presetFile, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		utils.HandleError(err, 0, true, true)
 	}
-	presetStruct := Preset{}
+	presetStruct := types.Preset{}
 	err = json.Unmarshal(presetFile, &presetStruct)
 	return presetStruct
 }

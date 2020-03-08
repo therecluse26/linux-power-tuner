@@ -4,28 +4,27 @@ import (
 	"errors"
 	"github.com/therecluse26/uranium/custom"
 	"github.com/therecluse26/uranium/pkg/builtin"
-	"github.com/therecluse26/uranium/pkg/preset"
+	"github.com/therecluse26/uranium/pkg/types"
 	"reflect"
 )
 
-type Funcs map[string]interface{}
 
-var AllFuncs = Funcs{}
-
-func LoadFunctions() {
+func LoadFunctions() types.Funcs {
+	var AllFuncs = types.Funcs{}
 	for k, f := range builtin.ExportedFuncs {
 		AllFuncs[k] = f
 	}
 	for k, f := range custom.ExportedFuncs {
 		AllFuncs[k] = f
 	}
+	return AllFuncs
 }
 
 /*
  * The secret sauce that allows for functions to be
  * called dynamically from presets and config files
  */
-func CallFunction(m map[string]interface{}, funcData preset.Function) (result interface{}, err error) {
+func CallFunction(m map[string]interface{}, funcData types.Function) (result interface{}, err error) {
 
 	f := reflect.ValueOf(m[funcData.Name])
 	if !f.IsValid() {
