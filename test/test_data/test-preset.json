@@ -4,7 +4,7 @@
   "events": [{
     "name": "eventName",
     "description": "Event description",
-    "pollingTime": 200000,
+    "pollingInterval": 200000,
     "conditions":  [
       {
         "id": 1,
@@ -18,9 +18,9 @@
         "id": 2,
         "description": "Condition2",
         "function": {
-          "name": "AddInts",
+          "name": "AddNumbers",
           "args": [
-            {"order": 1, "value": [1, 2, 5]}
+            {"order": 0, "value": [1, 2, 5]}
           ]
         },
         "expected_val": 8
@@ -32,7 +32,7 @@
           "type": "custom",
           "name": "UpperCase",
           "args": [
-            {"order": 1, "value": "testing"}
+            {"order": 0, "value": "testing"}
           ]
         },
         "expected_val": "TESTING"
@@ -44,9 +44,9 @@
       "function": {
         "name": "funcFour",
         "args": [
-          {"order": 1, "value": "valval1"},
-          {"order": 2, "value": 123},
-          {"order": 3, "value": "testval3"}
+          {"order": 0, "value": "valval1"},
+          {"order": 1, "value": 123},
+          {"order": 2, "value": "testval3"}
         ]
       }
     }]

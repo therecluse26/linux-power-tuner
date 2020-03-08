@@ -11,19 +11,28 @@ import (
 	"runtime"
 )
 
+func RunPresets(presets []preset.Preset, loadedFuncs []function.Funcs){
+	for _, pre := range presets {
+		for _, ev := range pre.Events {
+			for _, fn := range ev.Conditions {
+				res, err := function.CallFunction(function.AllFuncs, fn.Function)
+				if err != nil {
+					fmt.Println(err)
+				}
+				fmt.Println(res)
+			}
+		}
+	}
+}
+
 func main() {
 	LoadConfig()
 
 	presets := preset.LoadActivePresets()
-
-	fmt.Println(presets[0])
-
-	funcName := presets[0].Events[0].Conditions[0].Function.Name
-
 	function.LoadFunctions()
 
-	uc, _ := function.CallFunction(function.BuiltInFuncs, funcName)
-	fmt.Println(uc)
+	RunPresets(presets, )
+
 
 
 	/*

@@ -1,13 +1,12 @@
 package builtin
 
+import "fmt"
+
 func Hello() string {
 	return "Hello, World!"
 }
 
-func AddInts(nums []int) int {
-	total := 0
-	for _, n := range nums {
-		total += n
-	}
-	return total
+func Notify(message interface{}) bool {
+	fmt.Println(message)
+	return true
 }

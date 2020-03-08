@@ -4,29 +4,46 @@ import (
 	"errors"
 	"github.com/therecluse26/uranium/custom"
 	"github.com/therecluse26/uranium/pkg/builtin"
+	"github.com/therecluse26/uranium/pkg/preset"
 	"reflect"
 )
 
 type Funcs map[string]interface{}
 
-var BuiltInFuncs = Funcs{}
-var UserFuncs = Funcs{}
+var AllFuncs = Funcs{}
 
 func LoadFunctions() {
-	BuiltInFuncs = builtin.ExportedFuncs
-	UserFuncs = custom.ExportedFuncs
+	for k, f := range builtin.ExportedFuncs {
+		AllFuncs[k] = f
+	}
+	for k, f := range custom.ExportedFuncs {
+		AllFuncs[k] = f
+	}
 }
 
-func CallFunction(m map[string]interface{}, name string, params ... interface{}) (result interface{}, err error) {
-	var f = reflect.ValueOf(m[name])
-	if len(params) != f.Type().NumIn() {
-		err = errors.New("wrong number of arguments to " + name)
+/*
+ * The secret sauce that allows for functions to be
+ * called dynamically from presets and config files
+ */
+func CallFunction(m map[string]interface{}, funcData preset.Function) (result interface{}, err error) {
+
+	f := reflect.ValueOf(m[funcData.Name])
+	if !f.IsValid() {
+		err = errors.New("unable to parse function " + funcData.Name)
 		return
 	}
-	p := make([]reflect.Value, len(params))
-	for k, param := range params {
-		p[k] = reflect.ValueOf(param)
+
+	if len(funcData.Args) != f.Type().NumIn() {
+		err = errors.New("wrong number of arguments passed to " + funcData.Name)
+		return
 	}
+
+	p := make([]reflect.Value, len(funcData.Args))
+	for _, param := range funcData.Args {
+		p[param.Order] = reflect.ValueOf(param.Value)
+	}
+
+	// Function must return a value of some kind
 	result = f.Call(p)[0]
 	return result, err
 }

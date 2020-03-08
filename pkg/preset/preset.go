@@ -20,10 +20,10 @@ type Preset struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Events      []struct {
-		Name        string `json:"name"`
-		Description string `json:"description"`
-		PollingTime int64  `json:"pollingTime"`
-		Conditions []struct {
+		Name            string `json:"name"`
+		Description     string `json:"description"`
+		PollingInterval int64  `json:"pollingInterval"`
+		Conditions      []struct {
 			Id 			int    		`json:"id"`
 			Description string 		`json:"description"`
 			Function 	Function		`json:"function"`
@@ -32,7 +32,7 @@ type Preset struct {
 		ConditionExp string `json:"condition_exp"`
 	} `json:"events"`
 	Reactions   []struct {
-		Name     string		`json:"name"`
+		Name     string		`json:"name"` 
 		Function Function	`json:"function"`
 	} `json:"reactions"`
 }
@@ -77,7 +77,8 @@ func LoadPreset(filePath string) Preset {
  */
 func GetAvailablePresets() []string {
 	var presetFiles []string
-	_ = filepath.Walk(viper.Get("AvailablePresetPath").(string), func(path string, info os.FileInfo, err error) error {
+	_ = filepath.Walk( viper.Get("AvailablePresetPath").(string), func(path string, info os.FileInfo, err error) error {
+
 		if filepath.Ext(path) == ".json" {
 			presetFiles = append(presetFiles, info.Name())
 		}
@@ -90,7 +91,8 @@ func GetAvailablePresets() []string {
  * Enables preset by creating a link from the AvailablePresetPath to the EnabledPresetPath
  */
 func EnablePreset(fileName string) error {
-	err := os.Link(viper.Get("AvailablePresetPath").(string) + fileName, viper.Get("EnabledPresetPath").(string) + fileName)
+	err := os.Link( viper.Get("AvailablePresetPath").(string) + fileName,
+					viper.Get("EnabledPresetPath").(string) + fileName )
 	if err != nil {
 		if !os.IsExist(err) {
 			return err

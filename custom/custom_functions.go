@@ -4,14 +4,22 @@ import (
 	"strings"
 )
 
-func UpperCase(i string) string {
-	return strings.ToUpper(i)
+func UpperCase(i interface{}) string {
+	return strings.ToUpper(i.(string))
 }
 
-func Multiply(nums []int) int {
-	var t = nums[0]
+func AddNumbers(nums []interface{}) float64 {
+	var total float64
+	for _, n := range nums {
+		total += n.(float64)
+	}
+	return total
+}
+
+func Multiply(nums []interface{}) float64 {
+	var t = nums[0].(float64)
 	for i := 0; i < len(nums); i++ {
-		t *= nums[i]
+		t *= nums[i].(float64)
 	}
 	return t
 }
