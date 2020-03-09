@@ -12,7 +12,6 @@ type CommandMeta struct {
 	CommandString 	string
 }
 
-
 func (c *CommandMeta) Execute() ([]byte, error) {
 	cmd := exec.Command("bash", "-c", c.CommandString)
 	out, err := cmd.CombinedOutput()

@@ -12,20 +12,21 @@ import (
 	"path/filepath"
 )
 
-
-func RunPresets(presets []types.Preset, loadedFunctions types.Funcs){
+/**
+ * Runs all active presets
+ */
+func RunPresets(presets []types.Preset, loadedFunctions function.LoadedFunctions){
 	for _, pre := range presets {
-		for _, ev := range pre.Events {
-			for _, fn := range ev.Conditions {
-				res, err := function.CallFunction(loadedFunctions, fn.Function)
-				if err != nil {
-					utils.HandleError(err, 1, true, true)
-				}
-				fmt.Println(res)
+		for _, watch := range pre.Watchers {
+			res, err := loadedFunctions.CallFunction(watch.Function)
+			if err != nil {
+				utils.HandleError(err, 1, true, true)
 			}
+			fmt.Println(res)
 		}
 	}
 }
+
 /*
  * Loads active preset files from EnabledPresetPath directory
  */

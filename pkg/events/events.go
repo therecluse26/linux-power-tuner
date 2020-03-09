@@ -49,7 +49,6 @@ func (e *Event) Fire(){
 }
 
 func (e *Event) CheckValue(){
-
 	foundValue := ""
 
 	if foundValue == e.Condition.ExpectedValue {
@@ -67,8 +66,7 @@ func (l *Listener) RegisterEvent (event Event) {
 /*
  * Creates new event
  */
-func NewEvent(condition Condition, reactions []Reaction, pollingtime int32) Event {
-
+func EventFactory(condition Condition, reactions []Reaction, pollingtime int32) Event {
 	return Event{ Condition: condition,
 					Timestamp: time.Now(),
 					Reactions: reactions,

@@ -8,31 +8,48 @@ package types
  * from "preset" into "enabled"
  */
 type Preset struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Events      []struct {
-		Name            string `json:"name"`
-		Description     string `json:"description"`
-		PollingInterval int64  `json:"pollingInterval"`
-		Conditions      []struct {
-			Id 			int    		`json:"id"`
-			Description string 		`json:"description"`
-			Function 	Function		`json:"function"`
-			ExpectedVal interface{} `json:"expected_val"`
-		} `json:"conditions"`
-		ConditionExp string `json:"condition_exp"`
-	} `json:"events"`
-	Reactions   []struct {
-		Name     string		`json:"name"`
-		Function Function	`json:"function"`
-	} `json:"reactions"`
+	Name        	string 		`json:"name"`
+	Description 	string 		`json:"description"`
+	Hooks		   	[]Hook 		`json:"hooks"`
+	Watchers 		[]Watcher 	`json:"watchers"`
 }
 
+/*
+ * Go functions.
+ */
 type Function struct {
-	Name string `json:"name"`
+	Name			string		`json:"name"`
 	Args []struct {
-		Order int `json:"order"`
-		Value interface{} `json:"value"`
+		Order 		int 		`json:"order"`
+		Value 		interface{} `json:"value"`
 	} `json:"args"`
 }
 
+/*
+ * Event hooks. Wait for incoming input.
+ */
+type Hook struct {
+	Name            string 		`json:"name"`
+	Description     string 		`json:"description"`
+	Slug			string		`json:"slug"`
+	InputData		interface{}	`json:"input_data"`
+	Reactions		[]Reaction 	`json:"reactions"`
+}
+
+/*
+ * Monitors/watchers. Continuously poll endpoints.
+ */
+type Watcher struct {
+	Name            string 		`json:"name"`
+	Description     string 		`json:"description"`
+	Interval 		int64  		`json:"interval"`
+	Function		Function	`json:"function"`
+	ExpectedVal 	interface{} `json:"expected_val"`
+	Reactions   	[]Reaction 	`json:"reactions"`
+}
+
+type Reaction struct {
+	Order			int			`json:"order"`
+	Description		string		`json:"description"`
+	Function 		Function	`json:"function"`
+}

@@ -8,30 +8,36 @@ import (
 	"reflect"
 )
 
+type LoadedFunctions types.Funcs
 
-func LoadFunctions() types.Funcs {
-	var AllFuncs = types.Funcs{}
+/*
+ * Loads functions into mapped set
+ */
+func LoadFunctions() LoadedFunctions {
+  	var AllFunc = LoadedFunctions{}
+  	// Loads built-in functions
 	for k, f := range builtin.ExportedFuncs {
-		AllFuncs[k] = f
+		AllFunc[k] = f
 	}
+	// Loads custom functions
 	for k, f := range custom.ExportedFuncs {
-		AllFuncs[k] = f
+		AllFunc[k] = f
 	}
-	return AllFuncs
+	return AllFunc
 }
 
 /*
  * The secret sauce that allows for functions to be
  * called dynamically from presets and config files
  */
-func CallFunction(m map[string]interface{}, funcData types.Function) (result interface{}, err error) {
+func (m LoadedFunctions) CallFunction(funcData types.Function) (result interface{}, err error) {
 
 	f := reflect.ValueOf(m[funcData.Name])
+
 	if !f.IsValid() {
 		err = errors.New("unable to parse function " + funcData.Name)
 		return
 	}
-
 	if len(funcData.Args) != f.Type().NumIn() {
 		err = errors.New("wrong number of arguments passed to " + funcData.Name)
 		return

@@ -15,37 +15,8 @@ func main() {
 	LoadConfig()
 	presets := preset.LoadActivePresets()
 	allFunctions := function.LoadFunctions()
-
 	preset.RunPresets(presets, allFunctions)
 
-	/*
-	uc, _ := function.CallFunction(function.BuiltInFuncs, "Hello")
-	fmt.Println(uc)
-
-	t, _ := function.CallFunction(function.UserFuncs, "UpperCase",  "test. yeah yeah no. yeah")
-	fmt.Println(t)
-
-	ret, _ := function.CallFunction(function.BuiltInFuncs, "AddInts",  []int{1, 3, 4})
-	fmt.Println(ret)
-
-	m, _ := function.CallFunction(function.UserFuncs, "Multiply",  []int{1, 3, 4})
-	fmt.Println(m)
-	*/
-
-	/*
-	availPresets := preset.GetAvailablePresets()
-	var err error
-	for _, p := range availPresets {
-		err = preset.EnablePreset(p)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-	err = preset.DisablePreset(availPresets[1])
-	if err != nil {
-		log.Fatal(err)
-	}*/
-	// Register events
 }
 
 func LoadConfig() {
@@ -59,6 +30,7 @@ func LoadConfig() {
 	viper.SetDefault("HomePath", userInfo.HomeDir + "/")
 	viper.SetDefault("ProjectBase", basePath)
 	viper.SetDefault("ConfigPath",  viper.Get("HomePath").(string) + ".config/uranium/")
+	viper.SetDefault("ProjectLogo", viper.Get("ConfigPath").(string) + "react-logo.png")
 	viper.SetDefault("GlobalConfigFile", viper.Get("ConfigPath").(string) + "global-config.json")
 	viper.SetDefault("ConfigEventsPath", viper.Get("ConfigPath").(string) + "events/")
 	viper.SetDefault("AvailablePresetPath", viper.Get("ConfigPath").(string) + "available-presets/")
